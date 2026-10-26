@@ -2,10 +2,9 @@ export const brand = {
   name: 'RYTHARA',
   tagline: 'మా ఊరి పంట — ప్రతి ఇంటికి',
   englishTagline: 'Grown by Farmers. Delivered to Your Family.',
-  // Replace with your real WhatsApp number (international format, no +).
-  whatsappNumber: '919999999999',
-  email: 'hello@annadata.example',
-  phone: '+91 99999 99999',
+  whatsappNumber: '917093037497',
+  email: 'hello@rythara.example',
+  phone: '+91 70930 37497',
   address: 'Your Business Address, City, State — India',
   promise: 'From Farmer to Customer. No Unnecessary Middlemen. Just Honest Quality.',
 };
