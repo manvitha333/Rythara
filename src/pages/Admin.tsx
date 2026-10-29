@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { Navigate } from 'react-router-dom';
 import { Check, Edit3, Eye, EyeOff, LogOut, Package, Plus, Search, Trash2, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useProducts } from '@/context/ProductContext';
