@@ -8,6 +8,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
   const firstPack = product.packs[0];
   const isSeasonal = product.category === 'Seasonal';
+  const canOrder = product.status === 'active' && product.stockQuantity > 0;
 
   return (
     <article className="group hover-lift flex flex-col overflow-hidden rounded-3xl border border-forest-800/8 bg-white/60 backdrop-blur-sm">
@@ -65,6 +66,10 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
         </div>
 
+        {product.status === 'out_of_stock' && (
+          <p className="mt-4 rounded-xl bg-earth-100/60 px-3 py-2 text-xs font-semibold text-earth-700">Out of stock</p>
+        )}
+
         <div className="mt-5 flex gap-2">
           {isSeasonal ? (
             <a
@@ -79,10 +84,11 @@ export default function ProductCard({ product }: { product: Product }) {
           ) : (
             <button
               onClick={() => add(product, firstPack)}
-              className="btn-primary flex-1"
+              disabled={!canOrder}
+              className="btn-primary flex-1 disabled:cursor-not-allowed disabled:bg-forest-800/30 disabled:shadow-none"
             >
               <Plus className="h-4 w-4" />
-              Add to Cart
+              {canOrder ? 'Add to Cart' : 'Unavailable'}
             </button>
           )}
           <Link

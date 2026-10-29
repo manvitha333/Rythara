@@ -2,21 +2,23 @@ import { useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Minus, MessageCircle, Check, Sprout, ShieldCheck, Leaf, Package } from 'lucide-react';
 import { useReveal } from '@/hooks/useReveal';
-import { getProductBySlug } from '@/data/products';
+import { useProducts } from '@/context/ProductContext';
 import { useCart } from '@/context/CartContext';
 import { buildWhatsAppEnquiryLink } from '@/data/brand';
 import ProductCard from '@/components/ProductCard';
-import { products } from '@/data/products';
+
 
 export default function ProductDetail() {
   useReveal();
   const { slug } = useParams<{ slug: string }>();
-  const product = slug ? getProductBySlug(slug) : undefined;
+  const { products, loading } = useProducts();
+  const product = products.find((item) => item.slug === slug);
   const { add } = useCart();
   const [selectedPackId, setSelectedPackId] = useState(product?.packs[0]?.id ?? '');
   const [qty, setQty] = useState(1);
 
-  if (!product) return <Navigate to="/products" replace />;
+  if (loading) return <div className="min-h-screen bg-cream-100 px-6 pt-32 text-center text-forest-700/70">Loading product…</div>;
+  if (!product || product.status === 'hidden') return <Navigate to="/products" replace />;
 
   const pack = product.packs.find((p) => p.id === selectedPackId) ?? product.packs[0];
   const isSeasonal = product.category === 'Seasonal';
@@ -91,7 +93,7 @@ export default function ProductDetail() {
             </div>
 
             {/* Pack selection */}
-            {!isSeasonal && (
+            {!isSeasonal && product.status === 'active' && product.stockQuantity > 0 && (
               <div className="mt-8">
                 <p className="text-sm font-semibold text-forest-800">Select pack size</p>
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -140,7 +142,7 @@ export default function ProductDetail() {
               </div>
             )}
 
-            {isSeasonal && (
+            {isSeasonal && product.status === 'active' && (
               <a
                 href={buildWhatsAppEnquiryLink(product.name)}
                 target="_blank"
@@ -150,6 +152,10 @@ export default function ProductDetail() {
                 <MessageCircle className="h-4 w-4" />
                 Enquire on WhatsApp
               </a>
+            )}
+
+            {product.status === 'out_of_stock' && (
+              <div className="mt-8 rounded-2xl border border-earth-400/30 bg-earth-100/40 px-4 py-3 text-sm font-semibold text-earth-700">Out of stock — ordering is temporarily unavailable.</div>
             )}
 
             {/* Info rows */}
@@ -176,7 +182,7 @@ export default function ProductDetail() {
 
             <p className="mt-4 text-xs text-forest-700/50">
               *Product claims apply only to products verified to meet the stated specifications.
-              Prices shown are placeholders — replace with actual selling prices.
+              Prices are maintained by RYTHARA and may change.
             </p>
           </div>
         </div>

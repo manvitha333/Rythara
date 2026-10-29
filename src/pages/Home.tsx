@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { useReveal } from '@/hooks/useReveal';
 import ProductCard from '@/components/ProductCard';
-import { products } from '@/data/products';
+import { useProducts } from '@/context/ProductContext';
 import { brand } from '@/data/brand';
 
 const heroImg =
@@ -79,6 +79,7 @@ const journeyDetail = [
 
 export default function Home() {
   useReveal();
+  const { products } = useProducts();
 
   return (
     <div className="overflow-hidden">

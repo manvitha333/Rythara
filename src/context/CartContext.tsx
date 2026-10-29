@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { products, type Product, type PackSize } from '@/data/products';
+import { type Product, type PackSize } from '@/data/products';
 
 export type CartItem = {
   key: string;
@@ -110,4 +110,4 @@ export function useCart() {
   return ctx;
 }
 
-export const inStock = (id: string) => products.some((p) => p.id === id);
+

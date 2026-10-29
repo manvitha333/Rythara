@@ -2,12 +2,14 @@ import { useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import { useReveal } from '@/hooks/useReveal';
 import ProductCard from '@/components/ProductCard';
-import { products, categories } from '@/data/products';
+import { categories } from '@/data/products';
+import { useProducts } from '@/context/ProductContext';
 
 export default function Products() {
   useReveal();
   const [query, setQuery] = useState('');
   const [activeCat, setActiveCat] = useState<string>('All');
+  const { products, loading, error } = useProducts();
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
@@ -19,9 +21,9 @@ export default function Products() {
         p.tagline.toLowerCase().includes(q) ||
         p.shortDescription.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q);
-      return matchesCat && matchesQuery;
+      return matchesCat && matchesQuery && p.status !== 'hidden';
     });
-  }, [query, activeCat]);
+  }, [products, query, activeCat]);
 
   const cats = ['All', ...categories];
 
@@ -75,7 +77,11 @@ export default function Products() {
       {/* Grid */}
       <section className="py-16">
         <div className="container-x">
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className="rounded-3xl border border-forest-800/8 bg-white/50 py-20 text-center text-forest-700/70">Loading products…</div>
+          ) : error ? (
+            <div className="rounded-3xl border border-earth-400/30 bg-earth-100/30 py-20 text-center text-earth-700">{error}</div>
+          ) : filtered.length === 0 ? (
             <div className="rounded-3xl border border-forest-800/8 bg-white/50 py-20 text-center">
               <p className="text-forest-700/70">No products match your search.</p>
               <button
